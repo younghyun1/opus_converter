@@ -1,0 +1,6 @@
+[toolchain]
+# Pinned: nightly 2026-09-26 fails build-std with "can't find crate for `panic_unwind`", and
+# 2026-10-25 with "duplicate lang item in crate `core`: `sized`". Unpin once current nightly
+# builds this crate with the build-std settings in .cargo/config.toml.
+channel = "nightly-2026-07-23"
+components = ["rust-src", "rustfmt", "clippy"]

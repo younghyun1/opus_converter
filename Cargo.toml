@@ -1,0 +1,22 @@
+[package]
+name = "opus_converter"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.6.7", default-features = false, features = ["std", "derive", "help", "usage", "error-context"] }
+lofty = "0.25.5"
+thiserror = "2.0.21"
+tikv-jemallocator = { version = "0.7.0", features = ["background_threads", "unprefixed_malloc_on_supported_platforms"] }
+tokio = { version = "1.54.1", default-features = false, features = ["rt-multi-thread", "macros", "process", "fs", "signal", "sync", "parking_lot"] }
+tracing = { version = "0.1.44", default-features = false, features = ["std", "release_max_level_info"] }
+tracing-subscriber = { version = "0.3.23", default-features = false, features = ["fmt", "json", "env-filter", "std"] }
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+debug = false
+incremental = false
+strip = true
+lto = true
+panic = "unwind"

@@ -1,0 +1,15 @@
+# Static musl PIE with the standard library rebuilt so LTO and target-cpu reach it.
+[build]
+target = "x86_64-unknown-linux-musl" # build-std requires an explicit target
+# x86-64-v3 (AVX2, 2013+) is the floor for the CachyOS workstations this runs on.
+rustflags = ["-C", "target-cpu=x86-64-v3"]
+
+[unstable]
+build-std = ["core", "alloc", "std", "panic_unwind"]
+build-std-features = ["backtrace"]
+
+# Do not set linker = "musl-gcc": its spec stamps a PT_INTERP even under -static-pie.
+# jemalloc must share the Rust -march, or GCC emits __popcountdi2 calls into unlinked libgcc.
+[env]
+CC_x86_64_unknown_linux_musl = "musl-gcc"
+CFLAGS_x86_64_unknown_linux_musl = "-march=x86-64-v3 -O2"
