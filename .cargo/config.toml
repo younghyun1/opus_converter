@@ -1,15 +1,17 @@
-# Static musl PIE with the standard library rebuilt so LTO and target-cpu reach it.
+# Rebuild the standard library so codegen flags and LTO reach it.
 [build]
-target = "x86_64-unknown-linux-musl" # build-std requires an explicit target
+# build-std requires an explicit target. On Apple Silicon pass --target aarch64-apple-darwin.
+target = "x86_64-unknown-linux-gnu"
+
+[target.x86_64-unknown-linux-gnu]
 # x86-64-v3 (AVX2, 2013+) is the floor for the CachyOS workstations this runs on.
 rustflags = ["-C", "target-cpu=x86-64-v3"]
 
+[target.aarch64-apple-darwin]
+rustflags = ["-C", "target-cpu=apple-m1"]
+
 [unstable]
 build-std = ["core", "alloc", "std", "panic_unwind"]
-build-std-features = ["backtrace"]
-
-# Do not set linker = "musl-gcc": its spec stamps a PT_INTERP even under -static-pie.
-# jemalloc must share the Rust -march, or GCC emits __popcountdi2 calls into unlinked libgcc.
-[env]
-CC_x86_64_unknown_linux_musl = "musl-gcc"
-CFLAGS_x86_64_unknown_linux_musl = "-march=x86-64-v3 -O2"
+# std pulls in panic_unwind only through this feature, and listing features replaces the
+# defaults, so it must be named or rustc falls back to the prebuilt sysroot copy (E0152).
+build-std-features = ["backtrace", "panic-unwind"]
