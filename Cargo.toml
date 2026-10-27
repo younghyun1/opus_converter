@@ -18,5 +18,5 @@ codegen-units = 1
 debug = false
 incremental = false
 strip = true
-lto = true
+lto = "fat"
 panic = "unwind"

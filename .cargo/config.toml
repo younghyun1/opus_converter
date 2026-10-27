@@ -3,15 +3,20 @@
 # build-std requires an explicit target. On Apple Silicon pass --target aarch64-apple-darwin.
 target = "x86_64-unknown-linux-gnu"
 
+# Built and run on the same workstation, so tune for the host CPU.
 [target.x86_64-unknown-linux-gnu]
-# x86-64-v3 (AVX2, 2013+) is the floor for the CachyOS workstations this runs on.
-rustflags = ["-C", "target-cpu=x86-64-v3"]
+rustflags = ["-C", "target-cpu=native"]
 
 [target.aarch64-apple-darwin]
-rustflags = ["-C", "target-cpu=apple-m1"]
+rustflags = ["-C", "target-cpu=native"]
 
 [unstable]
 build-std = ["core", "alloc", "std", "panic_unwind"]
 # std pulls in panic_unwind only through this feature, and listing features replaces the
 # defaults, so it must be named or rustc falls back to the prebuilt sysroot copy (E0152).
 build-std-features = ["backtrace", "panic-unwind"]
+
+# C dependencies (jemalloc) get the same tuning as the Rust side.
+[env]
+CFLAGS_x86_64_unknown_linux_gnu = "-march=native -O2"
+CFLAGS_aarch64_apple_darwin = "-mcpu=native -O2"

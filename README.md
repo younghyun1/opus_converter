@@ -19,4 +19,4 @@ The input directory is scanned recursively; the output defaults to `<input>-opus
 
 ## Requirements
 
-Linux or macOS, `ffmpeg` built with `--enable-libopus` and `--enable-libsoxr` on `PATH`. Building uses nightly with `-Zbuild-std`; `.cargo/config.toml` targets `x86_64-unknown-linux-gnu` at x86-64-v3, and Apple Silicon builds pass `--target aarch64-apple-darwin`.
+Linux or macOS, `ffmpeg` built with `--enable-libopus` and `--enable-libsoxr` on `PATH`. Building uses nightly with `-Zbuild-std`; `.cargo/config.toml` targets `x86_64-unknown-linux-gnu` with `target-cpu=native` and fat LTO in release, and Apple Silicon builds pass `--target aarch64-apple-darwin`.
